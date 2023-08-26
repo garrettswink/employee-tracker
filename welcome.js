@@ -1,21 +1,4 @@
-const inquirer = require("inquirer");
-const mysql = require("mysql2");
 const cfonts = require('cfonts');
-
-// Connect MySQL
-const DBconnection = mysql.createConnection({
-    host: "localhost",
-    port: 3306,
-    user: "root",
-    password: "rootroot",
-    database: "employeeTracker_db",
-});
-
-DBconnection.connect((err) => {
-    if(err) throw err;
-    console.log("Connected to database")
-    start();
-})
 
 cfonts.say('Employer Tracker', {
     font: 'block',              // define the font face
@@ -31,3 +14,5 @@ cfonts.say('Employer Tracker', {
 	transitionGradient: false,  // define if this is a transition between colors directly
 	env: 'node'                 // define the environment cfonts is being executed in
 })
+
+module.exports = { cfonts };  
