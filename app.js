@@ -30,7 +30,6 @@ cfonts.say("Employee Tracker", {
     maxLength: "0",
 });
 
-
 function runTracker() {
     inquirer.prompt({
         type: "list",
