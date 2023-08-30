@@ -28,20 +28,19 @@ function runTracker() {
             "Add Department",
             "Add Role",
             "Add Employee",
-            "Update Employee Role",  
             "Exit",          
         ],
         })
         .then((answer) => {
             switch (answer.initiate) {
                 case "View All Departments":
-                    viewAllDepartments();
+                    viewDepartments();
                     break;
                 case "View All Roles":
-                    viewAllRoles();
+                    viewRoles();
                     break;
                 case "View All Employees":
-                    viewAllEmployees();
+                    viewEmployees();
                     break;
                 case "Add Department":
                     addDepartment();
@@ -53,12 +52,99 @@ function runTracker() {
                     addEmployee();
                     break;
                 case "Update Employee Role":
-                    updateEmployeeRole();
+                    updateEmployee();
                     break;
                 case "Exit":
                     DBconnection.end();
                     break;
             }
         });
+}
+
+function viewDepartments() {
+    const query = "SELECT * FROM departments";
+    DBconnection.query(query, (err, res) => {
+        if(err) throw err;
+        console.table(res);
+        runTracker();
+    });
+}
+
+function viewRoles() {
+    const query = "SELECT * FROM roles";
+    DBconnection.query(query, (err, res) => {
+        if(err) throw err;
+        console.table(res);
+        runTracker();
+    });
+}
+
+function viewEmployees() {
+    const query = "SELECT * FROM employees";
+    DBconnection.query(query, (err, res) => {
+        if(err) throw err;
+        console.table(res);
+        runTracker();
+    });
+}
+
+function addDepartment() {
+    inquirer.prompt({
+        type: "input",
+        name: "department",
+        message: "Enter the department you would like to add.",
+    })
+    .then((answer) => {
+         const query = `INSERT INTO departments (department_name) VALUES ("${answer.department}")`;
+            DBconnection.query(query, (err, res) => {
+                if(err) throw err;
+                console.log("Department added!");
+                runTracker();
+            } 
+        );
+    });
+}
+
+function addRole() {
+    const query = "SELECT * FROM departments";
+    DBconnection.query(query, (err, res) => {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "title",
+            message: "Enter the role you would like to add.",
+        },
+        {
+            type: "input",
+            name: "salary",
+            message: "Enter the salary for this role.",
+        },
+        {
+            type: "list",
+            name: "departments",
+            message: "Select the department for this role.",
+            choices: res.map((departments) => departments.department_name),
+        },
+    ])
+        .then((answer) => {
+            const department = res.find((department) => department.department_name === answer.department);
+
+            const query = "INSERT INTO roles SET ?";
+            DBconnection.query(
+                query,
+                {
+                    title: answer.title,
+                    salary: answer.salary,
+                    department_id: department,
+                },
+                (err, res) => {
+                    if (err) throw err;
+                    console.log("Role added!");
+                    runTracker();
+                }
+            );
+        });
+                
+    });
 }
 
